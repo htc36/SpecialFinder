@@ -19,35 +19,39 @@
 
   </head>
     <body>
-    <?php include 'functions2.php'; ?>	
+    <select class="selectpicker" multiple data-live-search="false" width='100%'>
+      <option>christmas</option>
+      <option>meat</option>
+      <option>deli-chilled-foods</option>
+    </select>
      <div class="topnav"> 
       <a class="active" href="#home">Specials</a>
-            <div class="combo">
-            <select id = "hi" class="selectpicker" data-live-search="false" > <option> None </option>
-            <?php
-                while($row2 = $type->fetch_assoc()) {
-            ?>
-                    <option><?php echo $row2["type"]; ?> </option> 
-            <?php
-                };
-            ?>
-        </select>
-            <select id="types"  class="selectpicker" data-live-search="false" > 
-            <?php
-                while($row3 = $tableNames->fetch_assoc()) {
-                    if ( substr($tableName, 1, 8) == $row3["table_name"] ) { ?>
-                        <option selected><?php echo $row3["table_name"]; ?> </option> 
-                    <?php }else { ?>
-                        <option><?php echo $row3["table_name"]; ?> </option> 
-                    <?php }; ?>
-
-            <?php
-                };
-            ?>
-        </select>
-            </div>
      <div id='search' class='hi'> </div >
+    <div class="well">
+	<form class="form-inline">
+		<label class="radio-inline">
+			<input type="radio" name="status" id="status_none" value="none" checked>
+			None
+		</label>
+		<label class="radio-inline">
+			<input type="radio" name="status" id="status_active" value="christmas">
+			Christmas
+		</label>
+		<label class="radio-inline">
+			<input type="radio" name="status" id="status_disabled" value="meat">
+                        Meat
+		<label class="radio-inline">
+			<input type="radio" name="status" id="status_suspended" value="deli-chilled-foods">
+			bakery
+		</label>
+		<label class="radio-inline">
+			<input type="radio" name="status" id="status_suspendedd" value="deli-chilled-foods">
+			bakery
+		</label>
+	</form>
+</div>
     </div>
+    <?php include 'functions2.php'; ?>	
     	<div class="limiter">
 		<div class="container-table100">
 
@@ -97,26 +101,35 @@
         { 
             $("#domainsTable").footable(); 
             //inicialization of select picker
-
-            $('.selectpicker').selectpicker('val', '<?php echo substr($tableName, 1, 8) ?>' );
+    $('.selectpicker').selectpicker();
         } 
     );
     </script>
     <script>
+
+    //on change function i need to control selected value
     $('select.selectpicker').on('change', function(){
-	var filtering = FooTable.get('#domainsTable').use(FooTable.Filtering), // get the filtering component for the table
-		filter = $(this).val(); // get the value to filter by
-	if (filter === 'None'){ // if the value is "none" remove the filter
-		filtering.removeFilter('name');
-                alert('filter removed');
-        }else if(filter[0] <='9' && filter[0] >='0') {
-            var hi = "do"//
-            window.location.search = '?date=' + filter;
-        }else { // otherwise add/update the filter.
-		filtering.addFilter('name', filter, [2], true, false);
-	}
-	filtering.filter();
-});
+       var filtering = FooTable.get('#domainsTable').use(FooTable.Filtering), // get the filtering component for the table
+            //var filter = $('.selectpicker option:selected').val();
+            filter = $(this).val();
+       if (filter == ''){
+           filtering.removeFilter('name');
+       }
+       filtering.addFilter('name', 'meat');
+       alert(filter)
+    });
+    </script>
+//    <script>
+//    $('[name=status]').on('change', function(){
+//	var filtering = FooTable.get('#domainsTable').use(FooTable.Filtering), // get the filtering component for the table
+//		filter = $(this).val(); // get the value to filter by
+//	if (filter === 'none'){ // if the value is "none" remove the filter
+//		filtering.removeFilter('name');
+//	} else { // otherwise add/update the filter.
+//		filtering.addFilter('name', filter, [2], true, false);
+//	}
+//	filtering.filter();
+//});
     </script>
     </body>
 </html>
