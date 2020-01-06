@@ -3,6 +3,7 @@ import random
 import math
 import mysql.connector
 import time
+from databaseCommands import *
 
 def getData(url):
     time.sleep(random.uniform(3,7))
@@ -10,7 +11,7 @@ def getData(url):
     headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
     return requests.get(url, headers=headers)
 
-def processData(connection, url, page, typee):
+def processData(connection, url, page, typee, tableName):
     # there is a 'dasFacets' which has data on how many multibuy or onecard specials etc
     #also facets which has details on what type of items are on sale
     response = getData(url)
@@ -22,15 +23,15 @@ def processData(connection, url, page, typee):
         print(i)
         startIndex = len(i['brand'])+1
         name = i['name'][startIndex : ] 
-        productDetails = [name, i['brand'], i['unit'], i['price']['originalPrice'], i['price']['salePrice'], \
-                        i['size']['packageType'], i['size']['volumeSize'], i['productTag']['tagType'], 1, typee]
+        productDetails = [name, i['brand'], i['price']['originalPrice'], i['price']['salePrice'], \
+                        i['size']['volumeSize'], i['productTag']['tagType'], 1, typee]
         if productDetails[-3] == 'IsMultiBuy':
             productDetails[-2] = i['productTag']['multiBuy']['quantity']
             productDetails[4] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
 
         productList.append(tuple(productDetails))
 
-    addToDatabase(productList, connection)
+    addToDatabase(productList, connection, tableName)
     maxPage = math.ceil(items / 120)
     print(url)
     
@@ -40,38 +41,20 @@ def processData(connection, url, page, typee):
         if page >= 11:
             editLocation = -18
         url = (url[: editLocation] + str(page) + '&target=specials')
-        processData(connection, url, page, typee)
+        processData(connection, url, page, typee, tableName)
 
-
-def addToDatabase(productDetails, connection):
-        cursor = connection.cursor()
-        query = "INSERT INTO products2 (name, brand, unit, origPrice, salePrice, pkgType, volSize, saleType, minAmount, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-#        query = "INSERT INTO products (name) VALUES (%s)"
-        cursor.executemany(query, productDetails)
-        connection.commit()
-        print("added To database")
-        cursor.close()
-
-def databaseConnect():
-    try:
-        connection = mysql.connector.connect(host='45.76.124.20', database='specials', user='root', password='Cc5c8cac59')
-        if connection.is_connected():
-            db_info = connection.get_server_info()
-            print("Connected to Mysql", db_info)
-            return connection
-        else:
-            print("not connected")
-    except Error as e:
-        print("Error", e)
 
 def main():
+    tableName = "21/12/19"
     connection = databaseConnect()
+    cursor = connection.cursor()
+    createTable(cursor, tableName)
     locations = ["christmas", "bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care"]
 #    locations = ['chocolate-sweets-snacks']
     for iii in locations:
         page = 1
         url = 'https://shop.countdown.co.nz/api/v1/products/search?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=specials'
-        processData(connection, url, page, iii)
+        processData(connection, url, page, iii, tableName)
 main()
 
 
