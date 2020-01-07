@@ -57,11 +57,13 @@
                                     <th class="column1">Name</th>
                                     <th class="column2">Brand</th>
                                     <th class="type">Type</th>
-                                    <th class="digits" data-type="number">OrigPrice</th>
-                                    <th class="digits" data-type="number">SalePrice</th>
+                                    <th class="digits" data-type="number">OrigPrice($)</th>
+                                    <th class="digits" data-type="number">SalePrice($)</th>
                                     <th class="digits" data-type="number">Volume Size</th>
-                                    <th class="digits" data-type="number">Discount</th>
-                                    <th class="end" data-type="number">MarkDown</th>
+                                    <th class="digits" data-type="number">Discount($)</th>
+                                    <th class="digits" data-type="number">MarkDown(%)</th>
+                                    <th class="end">Website Link</th>
+                                    
                             </tr>
                     </thead>
                     <tbody>
@@ -76,7 +78,8 @@
                                             <td class="digits"><?php echo $row["salePrice"]; ?></td>
                                             <td class="digits"><?php echo $row["volSize"]; ?></td>
                                             <td class="digits"><?php echo (printf('%0.1f',$row["origPrice"] - $row["salePrice"])); ?></td>
-                                            <td class="end">$$<?php echo sprintf('%0.2f', (1-($row["salePrice"] / $row["origPrice"]))*100 + "%"); ?></td>
+                                            <td class="digits">$$<?php echo sprintf('%0.2f', (1-($row["salePrice"] / $row["origPrice"]))*100 + "%"); ?></td>
+                                            <td class="end"><a href="https://shop.countdown.co.nz/shop/productdetails?stockcode=<?php echo ($row["code"]); ?>" target="_blank">click here </a></td>
 
                                     </tr>
                                     <?php

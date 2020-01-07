@@ -3,6 +3,7 @@ import random
 import math
 import mysql.connector
 import time
+import re
 from databaseCommands import *
 
 def getData(url):
@@ -16,18 +17,24 @@ def processData(connection, url, page, typee, tableName):
     #also facets which has details on what type of items are on sale
     response = getData(url)
     productList = []
-#    print(response.json())
+   # print(response.json())
+
     items = response.json()['products']['totalItems']
     products = response.json()['products']['items']
     for i in products:
-        print(i)
         startIndex = len(i['brand'])+1
         name = i['name'][startIndex : ] 
         productDetails = [name, i['brand'], i['price']['originalPrice'], i['price']['salePrice'], \
-                        i['size']['volumeSize'], i['productTag']['tagType'], 1, typee]
-        if productDetails[-3] == 'IsMultiBuy':
-            productDetails[-2] = i['productTag']['multiBuy']['quantity']
-            productDetails[4] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
+                        i['size']['volumeSize'], i['productTag']['tagType'], 1, typee, i['sku']]
+        if i['productTag']['tagType'] == "Other":
+            title = i['productTag']['additionalTag']['name']
+            if re.search("(...)\s[0-9]+\sfor\s\$[0-9]+(...)", title):
+                splitter = title.split()
+                productDetails[-3] = int(splitter[1])
+                productDetails[3] = int(splitter[3][1:])/int(splitter[1])
+        if productDetails[-4] == 'IsMultiBuy' or productDetails[-4] == 'IsGreatPriceMultiBuy':
+            productDetails[-3] = i['productTag']['multiBuy']['quantity']
+            productDetails[3] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
 
         productList.append(tuple(productDetails))
 
@@ -49,7 +56,7 @@ def main():
     connection = databaseConnect()
     cursor = connection.cursor()
     createTable(cursor, tableName)
-    locations = ["christmas", "bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care"]
+    locations = ["bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care"]
 #    locations = ['chocolate-sweets-snacks']
     for iii in locations:
         page = 1
@@ -72,6 +79,7 @@ main()
 
 
 
+locations = ["christmas", "bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care"]
 
 
 
