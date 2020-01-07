@@ -2,7 +2,7 @@ import mysql.connector
 
 def databaseConnect():
     try:
-        connection = mysql.connector.connect(host='45.76.124.20', database='specials', user='root', password='Cc5c8cac59')
+        connection = mysql.connector.connect(host='127.0.0.1', database='specials', user='root', password='pebble29er')
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
