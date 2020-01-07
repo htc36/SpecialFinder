@@ -4,6 +4,7 @@ import math
 import mysql.connector
 import time
 import re
+from datetime import datetime
 from databaseCommands import *
 
 def getData(url):
@@ -52,7 +53,7 @@ def processData(connection, url, page, typee, tableName):
 
 
 def main():
-    tableName = "21/12/19"
+    tableName = datetime.today().strftime('%d/%m/%y')
     connection = databaseConnect()
     cursor = connection.cursor()
     createTable(cursor, tableName)
