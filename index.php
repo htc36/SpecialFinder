@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Tablesorter Demo - Jeff Reifman</title>
+    <title>Special Finder</title>
     <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="foo/js/footable.min.js"></script>
 
@@ -51,17 +51,17 @@
     	<div class="limiter">
 		<div class="container-table100">
 
-            <table id="domainsTable" class="footable" data-paging='true' data-sorting='true'  data-paging-size='100' data-filter-container= "#search" data-filtering='true'>
+            <table id="domainsTable" class="footable" data-paging='true' data-sorting='true'  data-paging-size='100' data-filter-container= "#search" data-filtering='true' data-show-toggle="true">
                     <thead>
                             <tr class="table100-head">
-                                    <th class="column1">Name</th>
-                                    <th class="column2">Brand</th>
-                                    <th class="type">Type</th>
-                                    <th class="digits" data-type="number">OrigPrice($)</th>
-                                    <th class="digits" data-type="number">SalePrice($)</th>
-                                    <th class="digits" data-type="number">Volume Size</th>
-                                    <th class="digits" data-type="number">Discount($)</th>
-                                    <th class="digits" data-type="number">MarkDown(%)</th>
+                                    <th class="column1" data-breakpoints="sm">Name</th>
+                                    <th class="column2" data-breakpoints="sm">Brand</th>
+                                    <th class="type" data-breakpoints="sm">Type</th>
+                                    <th class="digits" data-type="number" data-breakpoints="xs">OrigPrice($)</th>
+                                    <th class="digits" data-type="number" data-breakpoints="xs">SalePrice($)</th>
+                                    <th class="digits" data-type="number" data-breakpoints="sm">Volume Size</th>
+                                    <th class="digits" data-type="number" data-breakpoints="sm">Discount($)</th>
+                                    <th class="digits" data-type="number" data-breakpoints="sm">MarkDown(%)</th>
                                     <th class="end">Website Link</th>
                                     
                             </tr>
@@ -71,7 +71,7 @@
                                         while($row = $rs_result->fetch_assoc()) {
                                     ?>
                                     <tr>
-                                            <td class="column1"><?php echo $row["name"]; ?> </td>
+                                            <td class="column1" ><?php echo $row["name"]; ?> </td>
                                             <td class="column2"><?php echo $row["brand"]; ?></td>
                                             <td class="type"><?php echo $row["type"]; ?></td>
                                             <td class="digits"><?php echo $row["origPrice"]; ?></td>
