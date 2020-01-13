@@ -1,14 +1,14 @@
 <html>
 <head>
     <title>Special Finder</title>
-    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="foo/js/footable.min.js"></script>
+    <script src="specialFinder/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="specialFinder/foo/js/footable.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="foo/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="foo/css/footable.standalone.min.css" type="text/css" media="print, projection, screen" />
-    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="specialFinder/foo/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="specialFinder/foo/css/footable.standalone.min.css" type="text/css" media="print, projection, screen" />
+    <link rel="stylesheet" type="text/css" href="specialFinder/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="specialFinder/css/util.css">
+	<link rel="stylesheet" type="text/css" href="specialFinder/css/main.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
@@ -19,7 +19,7 @@
 
   </head>
     <body>
-    <?php include 'functions2.php'; ?>	
+    <?php include 'specialFinder/functions2.php'; ?>	
      <div class="topnav"> 
       <a class="active" href="#home">Specials</a>
             <div class="combo">
