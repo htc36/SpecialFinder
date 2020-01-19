@@ -30,7 +30,6 @@
     	<div class="limiter">
               <table data-toggle="table" 
                 id = "table"
-                data-url="specialFinder/server/connect.php" 
                 data-height="100%"
                 data-search="true"
                 data-pagination="true"
@@ -52,9 +51,25 @@
                   </tr>
               </thead>
           </table>
+          <table id="table2"></table>
         </div>
   
   <script>
+      $('#table2').bootstrapTable({
+          url: 'data1.json',
+          pagination: true,
+          search: true,
+          columns: [{
+            field: 'id',
+            title: 'Item ID'
+          }, {
+            field: 'name',
+            title: 'Item Name'
+          }, {
+            field: 'price',
+            title: 'Item Price'
+          }]
+        })
       function queryParams(params) {
 	params.search = 8
         return params
