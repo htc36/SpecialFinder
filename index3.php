@@ -97,6 +97,7 @@
   }
     function queryParams(params) {
     params.dateOfSpecials = document.getElementById("hi").value 
+    params.type = document.getElementById("types").value
     return params
       }
 
@@ -149,6 +150,14 @@
       alert('You pressed on Alert')
     })
   })
+
+  $('#fresh-table').on('click-row.bs.table', function (row, $element, field) {
+    window.open("http://www.countdownspecials.xyz/specialFinder/tableTest.php?prodNum="+$element.code, '_blank');
+    alert($element.code)
+
+	
+	
+})
 
 </script>
 

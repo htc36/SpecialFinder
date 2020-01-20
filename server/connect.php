@@ -27,15 +27,9 @@ by table_name DESC";
 
         if (isset($_GET['search'])) {
             $WHERE = ' WHERE name LIKE "%'.$_GET['search'].'%" ';
-            if (isset($_GET['type'])) {
-                $WHERE += "and type = '".$_GET['type']."' ";
+            if ($_GET['type'] != 'None') {
+                $WHERE .= "and type = '".$_GET['type']."' ";
             }
-        } else {
-            $WHERE = NULL;
-            if (isset($_GET['type'])) {
-                $WHERE = " WHERE type = '".$_GET['type']."' ";
-            }
-
         }
 
         if (isset($_GET['sort'])) {
@@ -44,6 +38,7 @@ by table_name DESC";
             $ORDERBY = NULL;
         }
         $tableNameQuery = "SELECT name, brand, origPrice, salePrice, volSize, origPrice - salePrice AS discount, ROUND(((1 -(salePrice / origPrice))*100),2) as markDown, type, code ".$FROM . $WHERE." ".$ORDERBY." LIMIT ".$_GET['offset'].",".$_GET['limit'];
+
 
 
         $tableNames = $conn->query($tableNameQuery);
@@ -56,6 +51,7 @@ by table_name DESC";
         #echo $data;
         $data['total'] = $total;
         $data['rows'] = $rows;
+       # echo $tableNameQuery;
 
         echo json_encode($data);
 

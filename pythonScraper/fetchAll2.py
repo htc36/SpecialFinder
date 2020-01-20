@@ -11,12 +11,14 @@ def getData(url):
     time.sleep(random.uniform(3,7))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
     headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
+    print(url)
     return requests.get(url, headers=headers)
 
 def processData(connection, url, page, typee, tableName):
     # there is a 'dasFacets' which has data on how many multibuy or onecard specials etc
     #also facets which has details on what type of items are on sale
     response = getData(url)
+    print(response)
     productList = []
    # print(response.json())
     items = response.json()['products']['totalItems']
@@ -71,6 +73,7 @@ def main():
     for iii in locations:
         page = 1
         url = 'https://shop.countdown.co.nz/api/v1/products/search?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
+        url = 'https://shop.countdown.co.nz/api/v1/products?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
         processData(connection, url, page, iii, tableName)
 main()
 
