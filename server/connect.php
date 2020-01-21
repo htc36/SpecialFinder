@@ -46,7 +46,7 @@ by table_name DESC";
             $rows[]=$row;
         }
         $countQuery = "SELECT COUNT(*) as total ".$FROM;
-        $countQuery = "SELECT COUNT(*) as total ".$FROM . $WHERE." ".$ORDERBY." LIMIT ".$_GET['offset'].",".$_GET['limit'];
+        $countQuery = "SELECT COUNT(*) as total ".$FROM . $WHERE;
         $totalRowForm = $conn->query($countQuery);
         $total = ($totalRowForm->fetch_assoc())['total'];
         #echo $data;

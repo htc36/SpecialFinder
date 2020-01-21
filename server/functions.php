@@ -13,6 +13,6 @@
             $tableNameQuery = "SELECT STR_TO_DATE(table_name, '%d/%m/%Y') as test, table_name FROM information_schema.tables WHERE table_schema = 'specials' order by test DESC";  
             $tableNames = $conn->query($tableNameQuery);
 
-            $typeQuery = "select distinct type FROM `13/01/20`";
+            $typeQuery = "select distinct type FROM `20/01/20`";
             $type = $conn->query($typeQuery);
             global $tableNames, $type;
