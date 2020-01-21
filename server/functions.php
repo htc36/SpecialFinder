@@ -10,7 +10,7 @@
                     die("Connection failed: " . $conn->connect_error);
             }
 
-            $tableNameQuery = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'specials' order by table_name DESC";  
+            $tableNameQuery = "SELECT STR_TO_DATE(table_name, '%d/%m/%Y') as test, table_name FROM information_schema.tables WHERE table_schema = 'specials' order by test DESC";  
             $tableNames = $conn->query($tableNameQuery);
 
             $typeQuery = "select distinct type FROM `13/01/20`";

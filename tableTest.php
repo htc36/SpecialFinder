@@ -9,17 +9,16 @@
         if ($conn->connect_error){
                 die("Connection failed: " . $conn->connect_error);
         }
-	$tableNameQuery = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'specials' order by table_name DESC";
+	$tableNameQuery = "SELECT STR_TO_DATE(table_name, '%d/%m/%y') as test, table_name FROM information_schema.tables WHERE table_schema = 'specials' ORDER by test asc";
         $dataPoints = array();
         $tableNames = $conn->query($tableNameQuery);
+        $firstItem = true;
         while($row = $tableNames->fetch_assoc()) { 
             $handle = 'select salePrice, name from `'.$row["table_name"]."` where code = ".$_GET['prodNum']; 
             $graphPoints = $conn->query($handle);
             $row2 = $graphPoints->fetch_assoc();
             array_push($dataPoints, array("label"=> $row["table_name"], "y"=> floatval($row2['salePrice'])));
-            $name = $row2['salePrice'];
-            $name =  $row2['name'];
-		
+            $name = ucwords($row2['name']);
         };
 
 #                    

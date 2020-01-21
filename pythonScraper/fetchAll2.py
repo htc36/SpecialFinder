@@ -6,6 +6,8 @@ import time
 import re
 from datetime import datetime
 from databaseCommands import *
+from urlFinder import *
+
 
 def getData(url):
     time.sleep(random.uniform(3,7))
@@ -18,7 +20,6 @@ def processData(connection, url, page, typee, tableName):
     # there is a 'dasFacets' which has data on how many multibuy or onecard specials etc
     #also facets which has details on what type of items are on sale
     response = getData(url)
-    print(response)
     productList = []
    # print(response.json())
     items = response.json()['products']['totalItems']
@@ -28,12 +29,19 @@ def processData(connection, url, page, typee, tableName):
         name = i['name'][startIndex : ] 
         if typee == "liquor-beer-cider":
             amount = i['size']['packageType']
+            amountInPack = i['size']['volumeSize']
             if amount == None:
                 amount = i['variety']
-            name += " " +  amount
+            try:
+                name += " " +  amountInPack
+            except:
+                pass
+        
  
         productDetails = [name, i['brand'], i['price']['originalPrice'], i['price']['salePrice'], \
                 i['size']['volumeSize'], None, 1, typee, i['sku']]
+        if typee == "liquor-beer-cider":
+            productDetails[4] = amount
         if i['productTag'] != None:
             productDetails[-4] = i['productTag']['tagType'] 
  
@@ -41,10 +49,11 @@ def processData(connection, url, page, typee, tableName):
             title = i['productTag']['additionalTag']['name']
             if re.search("(...)\s[0-9]+\sfor\s\$[0-9]+(...)", title):
                 splitter = title.split()
-                productDetails[-3] = int(splitter[1])
-                productDetails[3] = int(splitter[3][1:])/int(splitter[1])
-                print("hi")
- 
+                try:
+                    productDetails[-3] = int(splitter[1])
+                    productDetails[3] = int(splitter[3][1:])/int(splitter[1])
+                except:
+                    print("Multibuy finder did not work")
         if productDetails[-4] == 'IsMultiBuy' or productDetails[-4] == 'IsGreatPriceMultiBuy':
             productDetails[-3] = i['productTag']['multiBuy']['quantity']
             productDetails[3] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
@@ -52,7 +61,6 @@ def processData(connection, url, page, typee, tableName):
         productList.append(tuple(productDetails))
     addToDatabase(productList, connection, tableName)
     maxPage = math.ceil(items / 120)
-    print(url)
     
     if page < maxPage:
         page += 1
@@ -65,11 +73,11 @@ def processData(connection, url, page, typee, tableName):
 
 def main():
     tableName = datetime.today().strftime('%d/%m/%y')
+    today = datetime.today()
     connection = databaseConnect()
     cursor = connection.cursor()
     createTable(cursor, tableName)
-    locations = ["bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care", "liquor-beer-cider", "liquor-wine", "toys-party-needs"]
-#    locations = ['chocolate-sweets-snacks']
+    locations = departmentFinder()
     for iii in locations:
         page = 1
         url = 'https://shop.countdown.co.nz/api/v1/products/search?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
@@ -87,6 +95,7 @@ main()
 
 
 
+locations = ["bakery", "deli-chilled-foods", "meat", "seafood", "baby-care", "baking-cooking", "biscuits-crackers", "breakfast-foods", "canned-prepared-foods", "chocolate-sweets-snacks", "cleaning-homecare", "drinks-hot-cold", "frozen-foods", "health-wellness", "home-kitchenware", "meal-ingredients", "office-entertainment", "personal-care", "pet-care", "liquor-beer-cider", "liquor-wine", "toys-party-needs"]
 
 
 

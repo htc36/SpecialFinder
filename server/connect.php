@@ -26,8 +26,8 @@ by table_name DESC";
         }
 
         if (isset($_GET['search'])) {
-            $WHERE = ' WHERE name LIKE "%'.$_GET['search'].'%" ';
-            if ($_GET['type'] != 'None') {
+            $WHERE = ' WHERE (name LIKE "%'.$_GET['search'].'%" OR brand LIKE "%'.$_GET['search'].'%") ';
+            if ($_GET['type'] != 'All') {
                 $WHERE .= "and type = '".$_GET['type']."' ";
             }
         }
@@ -46,6 +46,7 @@ by table_name DESC";
             $rows[]=$row;
         }
         $countQuery = "SELECT COUNT(*) as total ".$FROM;
+        $countQuery = "SELECT COUNT(*) as total ".$FROM . $WHERE." ".$ORDERBY." LIMIT ".$_GET['offset'].",".$_GET['limit'];
         $totalRowForm = $conn->query($countQuery);
         $total = ($totalRowForm->fetch_assoc())['total'];
         #echo $data;
