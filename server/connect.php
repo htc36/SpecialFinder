@@ -24,7 +24,6 @@ by table_name DESC";
         } else {
             $FROM = "FROM `".$latestDate."` ";
         }
-
         if (isset($_GET['search'])) {
             $WHERE = ' WHERE (name LIKE "%'.$_GET['search'].'%" OR brand LIKE "%'.$_GET['search'].'%") ';
             if ($_GET['type'] != 'All') {

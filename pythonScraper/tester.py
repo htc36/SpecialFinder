@@ -11,7 +11,7 @@ from extraFunctions import *
 
 
 def getData(url):
-    time.sleep(random.uniform(5,20))
+    time.sleep(random.uniform(1,5))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
     headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
     print(url)
@@ -65,10 +65,10 @@ def processData(connection, url, page, typee, tableName):
         if productDetails[-4] == 'IsMultiBuy' or productDetails[-4] == 'IsGreatPriceMultiBuy':
             productDetails[-3] = i['productTag']['multiBuy']['quantity']
             productDetails[3] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
-
         productDetails.append(i['barcode'])
+        print(productDetails)
+
         productList.append(tuple(productDetails))
-    addToDatabase(productList, connection, tableName)
     maxPage = math.ceil(items / 120)
     
     if page < maxPage:
@@ -81,17 +81,12 @@ def processData(connection, url, page, typee, tableName):
 
 
 def main():
-    tableName = datetime.today().strftime('%d/%m/%y')
-    today = datetime.today()
-    connection = databaseConnect()
-    cursor = connection.cursor()
-    createTable(cursor, tableName)
     locations = departmentFinder()
     for iii in locations:
         page = 1
         url = 'https://shop.countdown.co.nz/api/v1/products/search?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
         url = 'https://shop.countdown.co.nz/api/v1/products?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
-        processData(connection, url, page, iii, tableName)
+        processData("hi", url, 1, iii, "hi")
 main()
 
 

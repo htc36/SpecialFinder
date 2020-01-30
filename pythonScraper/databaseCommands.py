@@ -37,6 +37,7 @@ def createTable(cursor, tableName):
             saleType varchar(25),\
             minAmount int,\
             type varchar(25),\
+            barcode char(13),\
             code varchar(25)\
             );".format(tableName)
     cursor.execute(stmt)
@@ -45,7 +46,7 @@ def createTable(cursor, tableName):
 
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
-        query = "INSERT INTO `{}` (name, brand, origPrice, salePrice, volSize, saleType, minAmount, type, code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
+        query = "INSERT INTO `{}` (name, brand, origPrice, salePrice, volSize, saleType, minAmount, type, code, barcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
         cursor.executemany(query, productDetails)
         connection.commit()
         print("added To database")
