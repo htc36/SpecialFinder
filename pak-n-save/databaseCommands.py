@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 def databaseConnect():
     try:
-        connection = mysql.connector.connect(host='45.76.124.20', database='specials', user='root', password='pebble29er')
+        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
         print("hi")
         if connection.is_connected():
             db_info = connection.get_server_info()
@@ -25,40 +25,60 @@ def checkForDuplicate(cursor, tableName):
         print("There was an existing table with the same name, so has been dropped")
     else:
         print("Unique table name")
+        
+
+    
 
 
 def createTable(cursor, tableName):
     cursor.execute("DROP TABLE IF EXISTS `{}`".format(tableName)) 
     stmt = "create table `{}` (\
             id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,\
-            name varchar(80),\
-            brand varchar(40),\
-            origPrice Decimal(5,2),\
-            salePrice Decimal(5,2),\
-            volSize varchar(20),\
-            saleType varchar(25),\
+            quantityType varchar(8),\
+            productId varchar(22),\
+            name varchar (100),\
+            weight varchar(10),\
             minAmount int,\
-            type varchar(25),\
-            barcode char(13),\
-            code varchar(25)\
+            price Decimal(5,2),\
+            category1 varchar (40),\
+            category2 varchar (40)\
             );".format(tableName)
     cursor.execute(stmt)
+def eaddToDatabase(productDetails, connection, tableName):
+        cursor = connection.cursor()
+        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
+        cursor.executemany(query, productDetails)
+        connection.commit()
+        print("added To database")
+        cursor.close()
 
-
+def addTypes(connection, listOfTypes):
+        cursor = connection.cursor()
+        print(listOfTypes)
+        query = "INSERT INTO Types (Type) VALUES (%s)"
+        cursor.execute(query, "hi")
+        query = "INSERT INTO `{}` (type) VALUES (%s)".format('Types')
+        cursor.executemany(query, listOfTypes)
+        connection.commit()
+        print("added To database")
+        cursor.close()
+        
 
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
-        query = "INSERT INTO `{}` (name, brand, origPrice, salePrice, volSize, saleType, minAmount, type, code, barcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
+        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
         cursor.executemany(query, productDetails)
         connection.commit()
         print("added To database")
         cursor.close()
 
 
+
+
 def main():
     connection = databaseConnect()
-    # cursor = connection.cursor()
-    # createTable(cursor, "21/12/19")
+    cursor = connection.cursor()
+    createTable(cursor, "21/12/19")
 main()
 
 
