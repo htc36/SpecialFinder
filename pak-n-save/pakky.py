@@ -24,7 +24,7 @@ def getUrlLinks(s, storeId):
 #    addTypes(connection, list(types))
     return links
 
-def runSections(s, links, cursor, storeId):
+def runSections(s, links, cursor, storeId, name):
     s = setUpSession(s, storeId)
     base = 'https://www.paknsaveonline.co.nz'
     for link in links:
@@ -33,15 +33,15 @@ def runSections(s, links, cursor, storeId):
         #maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
         maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
         maxPage = math.ceil((int(maxPage) / 20))
-        departmentList = link.split("/")[2 : 4]
+        departmentList = link.split("/")[2 : 5]
 
         for page in range(1, maxPage + 1):
-            time.sleep(random.uniform(2,7))
+            time.sleep(random.uniform(5,15))
             url = base + link + "?pg=" + str(page)
             print(url)
         #    print(soup.prettify())
             products = scrapeKeywords(s, url, departmentList)
-            addToDatabase(products, cursor, 'testerLarge')
+            addToDatabase(products, cursor, name)
 
 def scrapeKeywords(s, url, departmentList):
     soup = BeautifulSoup(s.get(url).content, 'lxml')
@@ -70,14 +70,15 @@ def scrapeKeywords(s, url, departmentList):
     return resultsList
 
 def run():
-    s = requests.Session()
-    storeId ='65defcf2-bc15-490e-a84f-1f13b769cd22'
-    s =setUpSession(s, storeId)
-    del s.cookies["server_nearest_store"]
-    connection = databaseConnect()
-    links = getUrlLinks(s, storeId)
-    cursor = connection.cursor()
-    createTable(cursor, "testerLarge")
-    runSections(s, links, connection, storeId)
+    for name, storeId in getStores():
+        print(name,'\n\n\n\n\n')
+        s = requests.Session()
+        s =setUpSession(s, storeId)
+        del s.cookies["server_nearest_store"]
+        connection = databaseConnect()
+        links = getUrlLinks(s, storeId)
+        cursor = connection.cursor()
+        createTable(cursor, name)
+        runSections(s, links, connection, storeId, name)
 
 run()

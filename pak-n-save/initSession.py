@@ -1,4 +1,5 @@
 import requests
+import datetime
 import json
 
 def setUpSession(s, storeId):
@@ -34,5 +35,14 @@ def fixJson(raw):
         raw[indexs[0]: indexs[1]] = [''.join(raw[indexs[0]: indexs[1]])]
     result = '\n'.join(raw)
     return json.loads(result)
+def getStores():
+    date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%d/%m/%y"))
+    #data = json.loads(requests.get('https://www.paknsaveonline.co.nz/CommonApi/Store/GetStoreList').content)
+    stores = [[date +' Albany', '65defcf2-bc15-490e-a84f-1f13b769cd22'], [date+' Taupo', 'b92cc33f-b5a8-4b57-9b82-412946800020']]
+    stores += [[date+' Petone', '98ec3885-ac93-4fcb-807b-59c9055c52c4'], [date+' Whangarei', '529d66cc-60e3-432e-b8d1-efc9f2ec4919']]
+    stores += [[date+' Royal Oak', 'e1925ea7-01bc-4358-ae7c-c6502da5ab12']]
+    return stores
+# getStores()
+
 
 
