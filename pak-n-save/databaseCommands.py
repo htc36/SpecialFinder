@@ -78,7 +78,7 @@ def addToDatabase(productDetails, connection, tableName):
 def main():
     connection = databaseConnect()
     cursor = connection.cursor()
-    createTable(cursor, "21/12/19")
+#    createTable(cursor, "21/12/19")
 main()
 
 

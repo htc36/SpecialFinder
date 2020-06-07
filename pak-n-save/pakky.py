@@ -24,13 +24,13 @@ def getUrlLinks(s, storeId):
 #    addTypes(connection, list(types))
     return links
 
-def runSections(s, links, cursor):
+def runSections(s, links, cursor, storeId):
+    s = setUpSession(s, storeId)
     base = 'https://www.paknsaveonline.co.nz'
-    for link in links[17 : :]:
-        soup = BeautifulSoup(s.get(base + link).content)
-
+    for link in links:
+        data = s.get(base + link).content
+        soup = BeautifulSoup(data, 'lxml')
         #maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
-        print(link)
         maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
         maxPage = math.ceil((int(maxPage) / 20))
         departmentList = link.split("/")[2 : 4]
@@ -39,18 +39,23 @@ def runSections(s, links, cursor):
             time.sleep(random.uniform(2,7))
             url = base + link + "?pg=" + str(page)
             print(url)
-            print(maxPage)
-            print(soup.prettify())
+        #    print(soup.prettify())
             products = scrapeKeywords(s, url, departmentList)
             addToDatabase(products, cursor, 'testerLarge')
 
 def scrapeKeywords(s, url, departmentList):
-    soup = BeautifulSoup(s.get(url).content)
+    soup = BeautifulSoup(s.get(url).content, 'lxml')
     items = soup.findAll("div", {"class": "fs-product-card"})
     resultsList = []
+    print(s.cookies["STORE_ID"])
     for iii in items:
-        productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
-        print(len(productDetailsDict))
+        try:
+            productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
+        except:
+            raw = (iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options']).split('\n')
+            productDetailsDict = fixJson(raw)
+            continue
+
         productOutput = [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text]
         productOutput += [(productDetailsDict['productId']), productDetailsDict['productName']]
 
@@ -68,15 +73,11 @@ def run():
     s = requests.Session()
     storeId ='65defcf2-bc15-490e-a84f-1f13b769cd22'
     s =setUpSession(s, storeId)
-    print(s.cookies)
     del s.cookies["server_nearest_store"]
-
-    
     connection = databaseConnect()
     links = getUrlLinks(s, storeId)
     cursor = connection.cursor()
     createTable(cursor, "testerLarge")
-    #links = getUrlLinks(s)
-    runSections(s, links, connection)
+    runSections(s, links, connection, storeId)
 
 run()
