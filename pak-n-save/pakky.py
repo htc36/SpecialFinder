@@ -36,7 +36,7 @@ def runSections(s, links, cursor, storeId, name):
         departmentList = link.split("/")[2 : 5]
 
         for page in range(1, maxPage + 1):
-            time.sleep(random.uniform(5,15))
+            time.sleep(random.uniform(2,7))
             url = base + link + "?pg=" + str(page)
             print(url)
         #    print(soup.prettify())
