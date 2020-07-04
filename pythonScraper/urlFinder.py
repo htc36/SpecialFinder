@@ -5,14 +5,13 @@ import time
 import random
 
 def departmentFinder():
-    url = 'https://shop.countdown.co.nz'
-    response = get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    browseBanner = soup.find('div', {"id": "BrowseSlideBox"})
-    elements = (browseBanner.find_all('li', class_ = 'toolbar-slidebox-item'))
+    headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
+    data = get('https://shop.countdown.co.nz/api/v1/shell', headers=headers).json()
+    overallSections = (data['browse'])
     listOfDepartments = []
-    for iii in elements:
-        listOfDepartments.append(iii.a.get('href').split('/')[-1])
+    print(overallSections)
+    for section in overallSections:
+        listOfDepartments.append(section['url'])
     return listOfDepartments
 
 def productCounter():
