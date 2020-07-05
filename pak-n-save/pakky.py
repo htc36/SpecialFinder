@@ -6,6 +6,7 @@ from databaseCommands import *
 from initSession import *
 import time
 import math
+import datetime
 
 # Pushes request to Pak n Save API that retrieves the links to all the pages I want to scrape from on the website
 def getUrlLinks(s, storeId):
@@ -24,7 +25,7 @@ def getUrlLinks(s, storeId):
 #    addTypes(connection, list(types))
     return links
 
-def runSections(s, links, cursor, storeId, name):
+def runSections(s, links, cursor, storeId,date, name):
     s = setUpSession(s, storeId)
     base = 'https://www.paknsaveonline.co.nz'
     for link in links:
@@ -40,10 +41,10 @@ def runSections(s, links, cursor, storeId, name):
             url = base + link + "?pg=" + str(page)
             print(url)
         #    print(soup.prettify())
-            products = scrapeKeywords(s, url, departmentList)
-            addToDatabase(products, cursor, name)
+            products = scrapeKeywords(s, url, departmentList, name)
+            addToDatabase(products, cursor, date)
 
-def scrapeKeywords(s, url, departmentList):
+def scrapeKeywords(s, url, departmentList, name):
     soup = BeautifulSoup(s.get(url).content, 'lxml')
     items = soup.findAll("div", {"class": "fs-product-card"})
     resultsList = []
@@ -57,7 +58,12 @@ def scrapeKeywords(s, url, departmentList):
             continue
 
         productOutput = [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text]
-        productOutput += [(productDetailsDict['productId']), productDetailsDict['productName']]
+        productOutput += [productDetailsDict['productId']]
+        pName = productDetailsDict['productName']
+        if len(str(pName)) >= 99:
+            productOutput += [pName[0:99]]
+        else:
+            productOutput += [pName]
 
         priceSpec = productDetailsDict['ProductDetails']
 
@@ -66,7 +72,7 @@ def scrapeKeywords(s, url, departmentList):
             productOutput += [priceSpec['MultiBuyQuantity'], priceSpec['MultiBuyPrice'] ]
         else:
             productOutput += [None, priceSpec['PricePerItem'] ]
-        resultsList.append(productOutput + departmentList)
+        resultsList.append(productOutput + departmentList + [name])
     return resultsList
 
 def run():
@@ -78,7 +84,8 @@ def run():
         connection = databaseConnect()
         links = getUrlLinks(s, storeId)
         cursor = connection.cursor()
-        createTable(cursor, name)
-        runSections(s, links, connection, storeId, name)
+        date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%d/%m/%y"))
+        createTable(cursor, date)
+        runSections(s, links, connection, storeId, date, name)
 
 run()

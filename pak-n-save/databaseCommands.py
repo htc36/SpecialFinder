@@ -3,8 +3,8 @@ from mysql.connector import Error
 
 def databaseConnect():
     try:
-        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
-        #connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
+        #connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
+        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
@@ -42,7 +42,8 @@ def createTable(cursor, tableName):
             price Decimal(5,2),\
             category1 varchar (40),\
             category2 varchar (40),\
-            category3 varchar (40)\
+            category3 varchar (40),\
+            store varchar (30)\
             );".format(tableName)
     cursor.execute(stmt)
 def eaddToDatabase(productDetails, connection, tableName):
@@ -67,7 +68,7 @@ def addTypes(connection, listOfTypes):
 
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
-        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2, category3) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
+        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2, category3, store) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
         cursor.executemany(query, productDetails)
         connection.commit()
         print("added To database")
