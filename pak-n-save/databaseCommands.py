@@ -69,6 +69,7 @@ def addTypes(connection, listOfTypes):
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
         query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2, category3, store) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
+        print(productDetails)
         cursor.executemany(query, productDetails)
         connection.commit()
         print("added To database")

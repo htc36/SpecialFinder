@@ -48,7 +48,7 @@ def scrapeKeywords(s, url, departmentList, name):
     soup = BeautifulSoup(s.get(url).content, 'lxml')
     items = soup.findAll("div", {"class": "fs-product-card"})
     resultsList = []
-    print(s.cookies["STORE_ID"])
+    print(name)
     for iii in items:
         try:
             productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
@@ -57,17 +57,12 @@ def scrapeKeywords(s, url, departmentList, name):
             productDetailsDict = fixJson(raw)
             continue
 
-        productOutput = [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text]
-        productOutput += [productDetailsDict['productId']]
-        pName = productDetailsDict['productName']
-        if len(str(pName)) >= 99:
-            productOutput += [pName[0:99]]
-        else:
-            productOutput += [pName]
+        productOutput = [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text[0:7]]
+        productOutput += [productDetailsDict['productId'], productDetailsDict['productName'][0:99]]
 
         priceSpec = productDetailsDict['ProductDetails']
 
-        productOutput.append(priceSpec['PriceMode'])
+        productOutput.append(priceSpec['PriceMode'][0:9])
         if priceSpec['HasMultiBuyDeal']:
             productOutput += [priceSpec['MultiBuyQuantity'], priceSpec['MultiBuyPrice'] ]
         else:
@@ -77,7 +72,6 @@ def scrapeKeywords(s, url, departmentList, name):
 
 def run():
     for name, storeId in getStores():
-        print(name,'\n\n\n\n\n')
         s = requests.Session()
         s =setUpSession(s, storeId)
         del s.cookies["server_nearest_store"]
