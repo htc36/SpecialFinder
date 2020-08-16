@@ -3,8 +3,8 @@ from mysql.connector import Error
 
 def databaseConnect():
     try:
-        #connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
-        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
+        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
+#        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
@@ -19,7 +19,6 @@ def checkForDuplicate(cursor, tableName):
     cursor.execute(stmt)
     
     result = cursor.fetchone()
-    print(result)
     if result:
         cursor.execute("DROP TABLE ")
         print("There was an existing table with the same name, so has been dropped")
@@ -56,20 +55,17 @@ def eaddToDatabase(productDetails, connection, tableName):
 
 def addTypes(connection, listOfTypes):
         cursor = connection.cursor()
-        print(listOfTypes)
         query = "INSERT INTO Types (Type) VALUES (%s)"
         cursor.execute(query, "hi")
         query = "INSERT INTO `{}` (type) VALUES (%s)".format('Types')
         cursor.executemany(query, listOfTypes)
         connection.commit()
-        print("added To database")
         cursor.close()
         
 
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
         query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2, category3, store) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
-        print(productDetails)
         cursor.executemany(query, productDetails)
         connection.commit()
         print("added To database")

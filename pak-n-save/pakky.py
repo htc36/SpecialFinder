@@ -48,9 +48,8 @@ def scrapeKeywords(s, url, departmentList, name):
     soup = BeautifulSoup(s.get(url).content, 'lxml')
     items = soup.findAll("div", {"class": "fs-product-card"})
     resultsList = []
-    print(name)
     for iii in items:
-        try:
+        try:#
             productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
         except:
             raw = (iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options']).split('\n')
