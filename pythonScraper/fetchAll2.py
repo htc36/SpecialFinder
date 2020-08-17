@@ -11,17 +11,18 @@ from extraFunctions import *
 
 
 def getData(url):
-    time.sleep(random.uniform(5,20))
+    time.sleep(random.uniform(12,30))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
     headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
     print(url)
     return requests.get(url, headers=headers)
 
-def processData(connection, url, page, typee, tableName):
+def processData(connection, url, page, typee, date):
     # there is a 'dasFacets' which has data on how many multibuy or onecard specials etc
     #also facets which has details on what type of items are on sale
     response = getData(url)
-    productList = []
+    productDataList = []
+    priceDataList = []
    # print(response.json())
     items = response.json()['products']['totalItems']
     products = response.json()['products']['items']
@@ -67,8 +68,11 @@ def processData(connection, url, page, typee, tableName):
             productDetails[3] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
 
         productDetails.append(i['barcode'])
-        productList.append(tuple(productDetails))
-    addToDatabase(productList, connection, tableName)
+        productData = [productDetails[0], productDetails[1], productDetails[4], productDetails[7], productDetails[9], productDetails[8]]
+        priceData = [productDetails[2], productDetails[3], productDetails[5], productDetails[6], productDetails[9], date]
+        productDataList.append(tuple(productData))
+        priceDataList.append(tuple(priceData))
+    addToDatabase2(productDataList, priceDataList, connection)
     maxPage = math.ceil(items / 120)
     
     if page < maxPage:
@@ -77,21 +81,19 @@ def processData(connection, url, page, typee, tableName):
         if page >= 11:
             editLocation = -16
         url = (url[: editLocation] + str(page) + '&target=browse')
-        processData(connection, url, page, typee, tableName)
+        processData(connection, url, page, typee, date)
 
 
 def main():
-    tableName = datetime.today().strftime('%d/%m/%y')
-    today = datetime.today()
+    date = datetime.today().strftime('%Y-%m-%d')
     connection = databaseConnect()
     cursor = connection.cursor()
-    createTable(cursor, tableName)
     locations = departmentFinder()
     for iii in locations:
         page = 1
         url = 'https://shop.countdown.co.nz/api/v1/products/search?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
         url = 'https://shop.countdown.co.nz/api/v1/products?dasFilter=Department%3B%3B' + iii + '%3Bfalse&nextUI=true&size=120&page=1&target=browse'
-        processData(connection, url, page, iii, tableName)
+        processData(connection, url, page, iii, date)
 main()
 
 

@@ -1,8 +1,12 @@
+import random
+import time
+from sqlite3 import Error
+
 import mysql.connector
 
 def databaseConnect():
     try:
-        connection = mysql.connector.connect(host='127.0.0.1', database='specials', user='root', password='pebble29er')
+        connection = mysql.connector.connect(host='127.0.0.1', database='specials3', user='root', password='pebble29er')
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
@@ -11,19 +15,6 @@ def databaseConnect():
             print("not connected")
     except Error as e:
         print("Error", e)
-
-def checkForDuplicate(cursor, tableName):
-    stmt = "SHOW TABLES LIKE '{}'".format(tableName)
-    cursor.execute(stmt)
-    
-    result = cursor.fetchone()
-    print(result)
-    if result:
-        cursor.execute("DROP TABLE ")
-        print("There was an existing table with the same name, so has been dropped")
-    else:
-        print("Unique table name")
-
 
 def createTable(cursor, tableName):
     cursor.execute("DROP TABLE IF EXISTS `{}`".format(tableName)) 
@@ -51,14 +42,26 @@ def addToDatabase(productDetails, connection, tableName):
         connection.commit()
         print("added To database")
         cursor.close()
-
+def addToDatabase2(productDataList, priceDataList, connection):
+    cursor = connection.cursor()
+    print(productDataList)
+    print(priceDataList)
+    query = "INSERT IGNORE INTO `distinctProducts` (name, brand, volSize, type, barcode, code) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.executemany(query, productDataList)
+    connection.commit()
+    time.sleep(random.uniform(4,6))
+    query = "INSERT IGNORE INTO `priceOnDate` (origPrice, salePrice, saleType, minAmount, barcode, date) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.executemany(query, priceDataList)
+    connection.commit()
+    print("added to database")
+    cursor.close()
 
 def main():
     connection = databaseConnect()
     cursor = connection.cursor()
     createTable(cursor, "21/12/19")
 
-
+databaseConnect()
 
 
 
