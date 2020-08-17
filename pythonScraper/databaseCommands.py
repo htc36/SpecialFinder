@@ -44,8 +44,6 @@ def addToDatabase(productDetails, connection, tableName):
         cursor.close()
 def addToDatabase2(productDataList, priceDataList, connection):
     cursor = connection.cursor()
-    print(productDataList)
-    print(priceDataList)
     query = "INSERT IGNORE INTO `distinctProducts` (name, brand, volSize, type, barcode, code) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.executemany(query, productDataList)
     connection.commit()
