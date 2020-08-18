@@ -1,10 +1,12 @@
+import time
+
 import mysql.connector
 from mysql.connector import Error
 
 def databaseConnect():
     try:
         connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er')
-#        connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
+        # connection = mysql.connector.connect(host='localhost', database='pakNsave', user='root', password='pebble29er', port=2000)
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
@@ -14,44 +16,6 @@ def databaseConnect():
     except Error as e:
         print("Error", e)
 
-def checkForDuplicate(cursor, tableName):
-    stmt = "SHOW TABLES LIKE '{}'".format(tableName)
-    cursor.execute(stmt)
-    
-    result = cursor.fetchone()
-    if result:
-        cursor.execute("DROP TABLE ")
-        print("There was an existing table with the same name, so has been dropped")
-    else:
-        print("Unique table name")
-        
-
-    
-
-
-def createTable(cursor, tableName):
-    cursor.execute("DROP TABLE IF EXISTS `{}`".format(tableName)) 
-    stmt = "create table `{}` (\
-            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,\
-            quantityType varchar(8),\
-            productId varchar(22),\
-            name varchar (100),\
-            weight varchar(10),\
-            minAmount int,\
-            price Decimal(5,2),\
-            category1 varchar (40),\
-            category2 varchar (40),\
-            category3 varchar (40),\
-            store varchar (30)\
-            );".format(tableName)
-    cursor.execute(stmt)
-def eaddToDatabase(productDetails, connection, tableName):
-        cursor = connection.cursor()
-        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
-        cursor.executemany(query, productDetails)
-        connection.commit()
-        print("added To database")
-        cursor.close()
 
 def addTypes(connection, listOfTypes):
         cursor = connection.cursor()
@@ -63,15 +27,19 @@ def addTypes(connection, listOfTypes):
         cursor.close()
         
 
-def addToDatabase(productDetails, connection, tableName):
+def addToDatabase(productList, priceList, connection):
         cursor = connection.cursor()
-        query = "INSERT INTO `{}` (quantityType, productId, name, weight, minAmount, price, category1, category2, category3, store) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(tableName)
-        cursor.executemany(query, productDetails)
+        query = "INSERT IGNORE INTO distinctProducts (productId, quantityType, name, weight, category1, category2) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor.executemany(query, productList)
+        connection.commit()
+
+        time.sleep(2)
+
+        query = "INSERT IGNORE INTO priceOnDate (productId, minAmount, price, store, date) VALUES (%s, %s, %s, %s, %s)"
+        cursor.executemany(query, priceList)
         connection.commit()
         print("added To database")
         cursor.close()
-
-
 
 
 def main():

@@ -16,10 +16,6 @@ def getUrlLinks(s, storeId):
     types = set() 
     for section in overallSections:
         for innerSection in (section["Children"]):
-            if (len(innerSection["Children"]) != 0):
-                for bottomSection in innerSection['Children']:
-                    links.append(bottomSection["URL"])
-            else:
                 links.append(innerSection["URL"])
             #types.update(set(innerSection["URL"].split('/')[2:4]))
 #    addTypes(connection, list(types))
@@ -34,51 +30,60 @@ def runSections(s, links, cursor, storeId,date, name):
         #maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
         maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
         maxPage = math.ceil((int(maxPage) / 20))
-        departmentList = link.split("/")[2 : 5]
+        departmentList = link.split("/")[2 :]
 
         for page in range(1, maxPage + 1):
             time.sleep(random.uniform(2,7))
             url = base + link + "?pg=" + str(page)
             print(url)
-        #    print(soup.prettify())
-            products = scrapeKeywords(s, url, departmentList, name)
-            addToDatabase(products, cursor, date)
+            productList, priceList = scrapeKeywords(s, url, departmentList, name, date)
+            print(s.cookies["STORE_ID"])
+            addToDatabase(productList, priceList, cursor)
 
-def scrapeKeywords(s, url, departmentList, name):
+def scrapeKeywords(s, url, departmentList, name, date):
     soup = BeautifulSoup(s.get(url).content, 'lxml')
     items = soup.findAll("div", {"class": "fs-product-card"})
-    resultsList = []
+    productList = []
+    priceList = []
     for iii in items:
-        try:#
+        try:
             productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
         except:
             raw = (iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options']).split('\n')
             productDetailsDict = fixJson(raw)
             continue
 
-        productOutput = [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text[0:7]]
-        productOutput += [productDetailsDict['productId'], productDetailsDict['productName'][0:99]]
+        product = [productDetailsDict['productId']]
+        priceStoreDate = [productDetailsDict['productId']]
+
+        product += [iii.find("p", {"class": "u-color-half-dark-grey u-p3"}).text[0:7]]
+        product += [productDetailsDict['productName'][0:99]]
 
         priceSpec = productDetailsDict['ProductDetails']
 
-        productOutput.append(priceSpec['PriceMode'][0:9])
+        product.append(priceSpec['PriceMode'][0:9])
         if priceSpec['HasMultiBuyDeal']:
-            productOutput += [priceSpec['MultiBuyQuantity'], priceSpec['MultiBuyPrice'] ]
+            priceStoreDate += [priceSpec['MultiBuyQuantity'], priceSpec['MultiBuyPrice'] ]
         else:
-            productOutput += [None, priceSpec['PricePerItem'] ]
-        resultsList.append(productOutput + departmentList + [name])
-    return resultsList
+            priceStoreDate += [None, priceSpec['PricePerItem'] ]
+        # print(product + departmentList)
+        # print(priceStoreDate + [name, date])
+        productList.append(product + departmentList)
+        priceList.append(priceStoreDate + [name, date])
+    return productList, priceList
 
 def run():
     for name, storeId in getStores():
+        print("NEW STORE = " + name)
         s = requests.Session()
         s =setUpSession(s, storeId)
+        print(s.cookies["STORE_ID"])
         del s.cookies["server_nearest_store"]
         connection = databaseConnect()
         links = getUrlLinks(s, storeId)
         cursor = connection.cursor()
-        date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%d/%m/%y"))
-        createTable(cursor, date)
+        date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))
+        # createTable(cursor, date)
         runSections(s, links, connection, storeId, date, name)
 
 run()
