@@ -33,7 +33,7 @@ def runSections(s, links, cursor, storeId,date, name):
         departmentList = link.split("/")[2 :]
 
         for page in range(1, maxPage + 1):
-            time.sleep(random.uniform(2,7))
+            time.sleep(random.uniform(7,20))
             url = base + link + "?pg=" + str(page)
             print(url)
             productList, priceList = scrapeKeywords(s, url, departmentList, name, date)
