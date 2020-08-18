@@ -7,6 +7,7 @@ import mysql.connector
 def databaseConnect():
     try:
         connection = mysql.connector.connect(host='127.0.0.1', database='specials3', user='root', password='pebble29er')
+        # connection = mysql.connector.connect(host='127.0.0.1', database='specials3', user='root', password='pebble29er', port=2000)
         if connection.is_connected():
             db_info = connection.get_server_info()
             print("Connected to Mysql", db_info)
@@ -15,25 +16,6 @@ def databaseConnect():
             print("not connected")
     except Error as e:
         print("Error", e)
-
-def createTable(cursor, tableName):
-    cursor.execute("DROP TABLE IF EXISTS `{}`".format(tableName)) 
-    stmt = "create table `{}` (\
-            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,\
-            name varchar(80),\
-            brand varchar(40),\
-            origPrice Decimal(5,2),\
-            salePrice Decimal(5,2),\
-            volSize varchar(20),\
-            saleType varchar(25),\
-            minAmount int,\
-            type varchar(25),\
-            barcode char(13),\
-            code varchar(25)\
-            );".format(tableName)
-    cursor.execute(stmt)
-
-
 
 def addToDatabase(productDetails, connection, tableName):
         cursor = connection.cursor()
@@ -57,7 +39,6 @@ def addToDatabase2(productDataList, priceDataList, connection):
 def main():
     connection = databaseConnect()
     cursor = connection.cursor()
-    createTable(cursor, "21/12/19")
 
 databaseConnect()
 

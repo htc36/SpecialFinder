@@ -4,14 +4,14 @@ import math
 import mysql.connector
 import time
 import re
-from datetime import datetime
+import datetime
 from databaseCommands import *
 from urlFinder import *
 from extraFunctions import *
 
 
 def getData(url):
-    time.sleep(random.uniform(12,30))
+    time.sleep(random.uniform(20,40))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
     headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
     print(url)
@@ -85,7 +85,8 @@ def processData(connection, url, page, typee, date):
 
 
 def main():
-    date = datetime.today().strftime('%Y-%m-%d')
+    # date = datetime.today().strftime('%Y-%m-%d')
+    date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))
     connection = databaseConnect()
     cursor = connection.cursor()
     locations = departmentFinder()
