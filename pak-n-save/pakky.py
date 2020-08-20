@@ -83,7 +83,6 @@ def run():
         links = getUrlLinks(s, storeId)
         cursor = connection.cursor()
         date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))
-        # createTable(cursor, date)
         runSections(s, links, connection, storeId, date, name)
-
+        print(name)
 run()

@@ -26,11 +26,11 @@ def addToDatabase(productDetails, connection, tableName):
         cursor.close()
 def addToDatabase2(productDataList, priceDataList, connection):
     cursor = connection.cursor()
-    query = "INSERT IGNORE INTO `distinctProducts` (name, brand, volSize, type, barcode, code) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "INSERT IGNORE INTO `cdProducts` (name, brand, volSize, type, barcode, code) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.executemany(query, productDataList)
     connection.commit()
     time.sleep(random.uniform(4,6))
-    query = "INSERT IGNORE INTO `priceOnDate` (origPrice, salePrice, saleType, minAmount, barcode, date) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "INSERT IGNORE INTO `cdPrices` (origPrice, salePrice, saleType, minAmount, barcode, date) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.executemany(query, priceDataList)
     connection.commit()
     print("added to database")
