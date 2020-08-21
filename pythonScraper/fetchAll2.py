@@ -68,8 +68,9 @@ def processData(connection, url, page, typee, date):
             productDetails[3] = round(i['productTag']['multiBuy']['value'] / i['productTag']['multiBuy']['quantity'], 2)
 
         productDetails.append(i['barcode'])
-        productData = [productDetails[0], productDetails[1], productDetails[4], productDetails[7], productDetails[9], productDetails[8]]
-        priceData = [productDetails[2], productDetails[3], productDetails[5], productDetails[6], productDetails[9], date]
+        image = i["images"]["small"].split("/")[-1]
+        productData = [productDetails[0], productDetails[1], productDetails[4], productDetails[7], productDetails[9], productDetails[8], image]
+        priceData = [productDetails[2], productDetails[3], productDetails[5], productDetails[6], productDetails[8], date]
         productDataList.append(tuple(productData))
         priceDataList.append(tuple(priceData))
     addToDatabase2(productDataList, priceDataList, connection)
