@@ -16,10 +16,11 @@ def getUrlLinks(s, storeId):
     types = set() 
     for section in overallSections:
         for innerSection in (section["Children"]):
-                links.append(innerSection["URL"])
+                links.append(innerSection["URL"].split("?")[0])
             #types.update(set(innerSection["URL"].split('/')[2:4]))
 #    addTypes(connection, list(types))
     return links
+
 
 def runSections(s, links, cursor, storeId,date, name):
     s = setUpSession(s, storeId)
