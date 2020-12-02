@@ -26,15 +26,21 @@ def runSections(s, links, cursor, storeId,date, name):
     s = setUpSession(s, storeId)
     base = 'https://www.paknsaveonline.co.nz'
     for link in links:
+        print("inside " + link)
         data = s.get(base + link).content
+        print(data)
         soup = BeautifulSoup(data, 'lxml')
-        #maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
-        maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
+        try:
+            maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
+        except:
+            print("find Page failed")
+            maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
         maxPage = math.ceil((int(maxPage) / 20))
         departmentList = link.split("/")[2 :]
 
         for page in range(1, maxPage + 1):
             time.sleep(random.uniform(7,20))
+            # time.sleep(random.uniform(2,5))
             url = base + link + "?pg=" + str(page)
             print(url)
             productList, priceList = scrapeKeywords(s, url, departmentList, name, date)
