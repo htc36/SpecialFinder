@@ -29,6 +29,13 @@ def setUpSession(s, storeId):
 def fixJson(raw):
     value = []
     for index in range(0, len(raw) - 2):
+        test = raw[index].split('"')
+        if len(test) > 5:
+            test[1] = '"' + test[1] + '"'
+            test[3] = '"' + test[3]
+            test[-2] = test[-2] + '"'
+            raw[index] = ''.join(test)
+
         if (raw[index][-2]) != "," and raw[index][-2] != "{":
             value.append([index, index+2])#, [''.join(raw[index: index+2])]))
     for indexs in value:
