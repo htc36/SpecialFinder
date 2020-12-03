@@ -26,6 +26,7 @@ def runSections(s, links, cursor, storeId,date, name):
     s = setUpSession(s, storeId)
     base = 'https://www.paknsaveonline.co.nz'
     for link in links:
+        print(time.localtime())
         print("inside " + link)
         data = s.get(base + link).content
         print(data)
