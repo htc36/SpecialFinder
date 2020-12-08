@@ -29,7 +29,6 @@ def runSections(s, links, cursor, storeId,date, name):
         print(time.localtime())
         print("inside " + link)
         data = s.get(base + link).content
-        print(data)
         soup = BeautifulSoup(data, 'lxml')
         try:
             maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
@@ -82,7 +81,7 @@ def scrapeKeywords(s, url, departmentList, name, date):
 
 def run():
     for name, storeId in getStores():
-        print("NEW STORE = " + name)
+        print("NEW STORE = " + name + "\n\n")
         s = requests.Session()
         s =setUpSession(s, storeId)
         print(s.cookies["STORE_ID"])
@@ -93,4 +92,6 @@ def run():
         date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))
         runSections(s, links, connection, storeId, date, name)
         print(name)
+    print("I have completed!!!!!!")
+
 run()
