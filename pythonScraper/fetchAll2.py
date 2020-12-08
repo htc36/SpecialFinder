@@ -95,7 +95,7 @@ def main():
     storeDictonary = getStores(s)
     print(storeDictonary)
     stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central']
-    for store in stores[: : 4]:
+    for store in stores:
         s = createSession()
         storeId = storeDictonary[store]['id']
         print(str(storeId) + " " + store)
