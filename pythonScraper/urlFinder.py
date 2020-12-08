@@ -3,10 +3,11 @@ import requests
 from requests import get
 import time
 import random
+import json
 
-def departmentFinder():
-    headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
-    data = get('https://shop.countdown.co.nz/api/v1/shell', headers=headers).json()
+def departmentFinder(s):
+    # headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
+    data = s.get('https://shop.countdown.co.nz/api/v1/shell').json()
     overallSections = (data['browse'])
     listOfDepartments = []
     print(overallSections)
@@ -33,6 +34,34 @@ def productCounter():
         amount = int(elements.text.split()[0])
         print(amount)
         total += amount
+def createSession():
+    s = requests.Session()
+    headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
+    s.headers = headers
+    return s
+
+def getStores(s):
+    headers = {'Accept': '*/*', 'Connection': 'keep-alive', 'method': 'GET', 'accept-encoding': 'gzip, deflate, br', 'cache-control': 'no-cache', 'content-type': 'application/json', 'pragma': 'no-cache', 'sec-fetch-mode': 'cors', 'sec-fetch-site': 'same-origin', 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', 'x-requested-with': 'OnlineShopping.WebApp'}
+    s.headers = headers
+    data = s.get('https://shop.countdown.co.nz/api/v1/addresses/pickup-addresses').content
+    storeDict = json.loads(data)['storeAreas'][0]['storeAddresses']
+    fullStoreDictonary = {}
+    for storeObject in storeDict:
+        fullStoreDictonary[storeObject['name']] = storeObject
+    return fullStoreDictonary
+
+def storeSetter(s, id):
+    data = {"addressId": id}
+    r = s.put('https://shop.countdown.co.nz/api/v1/fulfilment/my/pickup-addresses', json=data)
+    print(r.content)
+    return s, r.content
+
+
+# s = requests.Session()
+# getStores(s)
+# storeSetter(s, storeId)
+
+
 
 def locationFinder():
     url = 'https://shop.countdown.co.nz'

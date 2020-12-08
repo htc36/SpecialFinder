@@ -31,7 +31,7 @@ def addToDatabase2(productDataList, priceDataList, connection):
     cursor.executemany(query, productDataList)
     connection.commit()
     time.sleep(random.uniform(4,6))
-    query = "INSERT INTO `cdPrices` (origPrice, salePrice, saleType, minAmount, code, date) VALUES (%s, %s, %s, %s, %s, %s)" \
+    query = "INSERT INTO `cdPrices` (origPrice, salePrice, saleType, minAmount, code, date, storeCode) VALUES (%s, %s, %s, %s, %s, %s, %s)" \
             "ON DUPLICATE KEY UPDATE origPrice=VALUES(origPrice), salePrice=VALUES(salePrice), saleType=VALUES(saleType), minAmount=VALUES(minAmount)"
     cursor.executemany(query, priceDataList)
     connection.commit()
@@ -42,7 +42,7 @@ def main():
     connection = databaseConnect()
     cursor = connection.cursor()
 
-databaseConnect()
+# databaseConnect()
 
 
 
