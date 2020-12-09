@@ -1,9 +1,11 @@
 import requests
 import datetime
 import json
+from fake_useragent import UserAgent
 
 def setUpSession(s, storeId):
-    s.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'}
+    ua = UserAgent()
+    s.headers = {'User-Agent': ua.random}
     s.get('https://www.paknsaveonline.co.nz/category/fresh-foods-and-bakery')
     s.post('https://www.paknsaveonline.co.nz/CommonApi/Store/ChangeStore?storeId=' + storeId).json()
     required_args = {

@@ -7,6 +7,7 @@ from initSession import *
 import time
 import math
 import datetime
+from traceback_with_variables import printing_tb, ColorSchemes
 
 # Pushes request to Pak n Save API that retrieves the links to all the pages I want to scrape from on the website
 def getUrlLinks(s, storeId):
@@ -94,4 +95,17 @@ def run():
         print(name)
     print("I have completed!!!!!!")
 
-run()
+def init():
+    with printing_tb(
+            num_context_lines=1,
+            max_value_str_len=-1,
+            max_exc_str_len=-1,
+            ellipsis_='...',
+            skip_cur_frame=False,  # e.g. no info about 'x'
+            reraise=False,  # i.e. program won't fail, exceptions stay inside
+            color_scheme=ColorSchemes.synthwave,
+    ):
+        run()
+
+
+init()
