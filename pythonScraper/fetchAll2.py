@@ -13,7 +13,7 @@ from traceback_with_variables import printing_tb, ColorSchemes
 
 def getData(url, s):
     # time.sleep(random.uniform(20,40))
-    time.sleep(random.uniform(5,10))
+    time.sleep(random.uniform(5,20))
     print(url)
     return s.get(url)
 
