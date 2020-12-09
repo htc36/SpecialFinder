@@ -88,8 +88,6 @@ def locationFinder():
     mydivs = soup.find("a", {"class": "shop-info-action show-delivery-address-link "}).contents
     print(soup)
 
-#locationFinder()
-import proxyscrape
 
 
 
