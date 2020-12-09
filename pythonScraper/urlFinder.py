@@ -13,7 +13,6 @@ def departmentFinder(s):
     data = s.get('https://shop.countdown.co.nz/api/v1/shell').json()
     overallSections = (data['browse'])
     listOfDepartments = []
-    print(overallSections)
     for section in overallSections:
         listOfDepartments.append(section['url'])
     return listOfDepartments
@@ -55,7 +54,6 @@ def getStores(s):
 def storeSetter(s, id):
     data = {"addressId": id}
     r = s.put('https://shop.countdown.co.nz/api/v1/fulfilment/my/pickup-addresses', json=data)
-    print(r.content)
     return s, r.content
 
 
