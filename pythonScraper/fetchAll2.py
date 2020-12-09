@@ -8,6 +8,7 @@ import datetime
 from databaseCommands import *
 from urlFinder import *
 from extraFunctions import *
+from traceback_with_variables import printing_tb, ColorSchemes
 
 
 def getData(url, s):
@@ -19,12 +20,12 @@ def getData(url, s):
 def processData(connection, url, page, typee, date, storeId, s):
     # there is a 'dasFacets' which has data on how many multibuy or onecard specials etc
     #also facets which has details on what type of items are on sale
-    response = getData(url, s)
+    response = getData(url, s).json()
     productDataList = []
     priceDataList = []
    # print(response.json())
-    items = response.json()['products']['totalItems']
-    products = response.json()['products']['items']
+    items = response['products']['totalItems']
+    products = response['products']['items']
     for i in products:
         if (i['type'] != 'Product'):
             continue
@@ -93,7 +94,6 @@ def main():
     # cursor = connection.cursor()
     s = createSession()
     storeDictonary = getStores(s)
-    print(storeDictonary)
     stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central']
     for store in stores:
         s = createSession()
@@ -108,6 +108,18 @@ def main():
             processData(connection, url, page, iii, date, storeId, s)
     print("finished evvvvveerryuyything" )
 
+def init():
+    with printing_tb(
+            num_context_lines=1,
+            max_value_str_len=-1,
+            max_exc_str_len=-1,
+            ellipsis_='...',
+            skip_cur_frame=True,  # e.g. no info about 'x'
+            reraise=False,  # i.e. program won't fail, exceptions stay inside
+            color_scheme=ColorSchemes.synthwave,
+    ):
+        main()
 
-main()
+
+init()
 
