@@ -116,7 +116,7 @@ def init():
             ellipsis_='...',
             skip_cur_frame=True,  # e.g. no info about 'x'
             reraise=False,  # i.e. program won't fail, exceptions stay inside
-            color_scheme=ColorSchemes.synthwave,
+            # color_scheme=ColorSchemes.synthwave,
     ):
         main()
 
