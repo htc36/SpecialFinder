@@ -40,7 +40,7 @@ def runSections(s, links, cursor, storeId,date, name):
         departmentList = link.split("/")[2 :]
 
         for page in range(1, maxPage + 1):
-            time.sleep(random.uniform(7,20))
+            time.sleep(random.uniform(10,20))
             # time.sleep(random.uniform(2,5))
             url = base + link + "?pg=" + str(page)
             print(url)
@@ -103,7 +103,7 @@ def init():
             ellipsis_='...',
             skip_cur_frame=False,  # e.g. no info about 'x'
             reraise=False,  # i.e. program won't fail, exceptions stay inside
-            color_scheme=ColorSchemes.synthwave,
+            # color_scheme=ColorSchemes.synthwave,
     ):
         run()
 
