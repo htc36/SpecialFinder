@@ -28,14 +28,17 @@ def runSections(s, links, cursor, storeId,date, name):
     base = 'https://www.paknsaveonline.co.nz'
     for link in links:
         print(time.localtime())
-        print("inside " + link)
+        print("trying to get max page of " + link)
         data = s.get(base + link).content
         soup = BeautifulSoup(data, 'lxml')
-        try:
+        if soup.find('title').text == ' PAKnSave - Error ':
+            print("find Page failed" + "\n\n\n\n\n\n\n\n")
+            time.sleep(random.uniforl(30,50))
+            data = s.get(base + link).content
+            soup = BeautifulSoup(data, 'lxml')
             maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
-        except:
-            print("find Page failed")
-            maxPage = soup.find("div", {"class": "fs-product-filter__item u-color-half-dark-grey u-hide-down-l"}).text.split(" ")[-2]
+        else:
+            maxPage = soup.find("div", {"class": "fs-pagination__info"}).text.split(" ")[-2]
         maxPage = math.ceil((int(maxPage) / 20))
         departmentList = link.split("/")[2 :]
 
@@ -43,9 +46,8 @@ def runSections(s, links, cursor, storeId,date, name):
             time.sleep(random.uniform(10,20))
             # time.sleep(random.uniform(2,5))
             url = base + link + "?pg=" + str(page)
-            print(url)
+            print(url + " " + s.cookies["STORE_ID"][0:5] + " " + name)
             productList, priceList = scrapeKeywords(s, url, departmentList, name, date)
-            print(s.cookies["STORE_ID"])
             addToDatabase(productList, priceList, cursor)
 
 def scrapeKeywords(s, url, departmentList, name, date):
@@ -57,6 +59,7 @@ def scrapeKeywords(s, url, departmentList, name, date):
         try:
             productDetailsDict = json.loads(iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options'])
         except:
+            print("Load JSON FAILED")
             raw = (iii.find("div", {"class": "js-product-card-footer fs-product-card__footer-container"})['data-options']).split('\n')
             productDetailsDict = fixJson(raw)
             continue
