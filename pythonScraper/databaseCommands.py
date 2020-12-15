@@ -42,9 +42,8 @@ def storeSaver(connection, storeObjList):
     for key,value in storeObjList.items():
         toSave = [key.strip(), str(value["id"]), value["address"]]
         result.append(toSave)
-
     cursor = connection.cursor()
-    query = "INSERT INTO `countdownStores` (storeCode, storeName, address) VALUES (%s, %s, %s) " \
+    query = "INSERT INTO `countdownStores` (storeName, storeCode, address) VALUES (%s, %s, %s) " \
             "ON DUPLICATE KEY UPDATE address=VALUES (address)"
     cursor.executemany(query, result)
     connection.commit()
