@@ -94,6 +94,7 @@ def main():
     # cursor = connection.cursor()
     s = createSession()
     storeDictonary = getStores(s)
+    storeSaver(connection, storeDictonary)
     stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central']
     for store in stores:
         s = createSession()

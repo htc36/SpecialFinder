@@ -57,10 +57,6 @@ def storeSetter(s, id):
     return s, r.content
 
 
-# s = requests.Session()
-# getStores(s)
-# storeSetter(s, storeId)
-
 
 
 def locationFinder():
