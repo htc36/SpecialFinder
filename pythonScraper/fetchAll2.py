@@ -88,10 +88,8 @@ def processData(connection, url, page, typee, date, storeId, s):
 
 
 def main():
-    # date = datetime.today().strftime('%Y-%m-%d')
     date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))
     connection = databaseConnect()
-    # cursor = connection.cursor()
     s = createSession()
     storeDictonary = getStores(s)
     storeSaver(connection, storeDictonary)
