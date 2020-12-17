@@ -47,7 +47,7 @@ def runSections(s, links, cursor, storeId,date, name):
             # time.sleep(random.uniform(2,5))
             url = base + link + "?pg=" + str(page)
             print(url + " " + s.cookies["STORE_ID"][0:5] + " " + name)
-            productList, priceList = scrapeKeywords(s, url, departmentList, name, date)
+            productList, priceList = scrapeKeywords(s, url, departmentList, storeId, date)
             addToDatabase(productList, priceList, cursor)
 
 def scrapeKeywords(s, url, departmentList, name, date):
@@ -84,13 +84,18 @@ def scrapeKeywords(s, url, departmentList, name, date):
     return productList, priceList
 
 def run():
-    for name, storeId in getStores():
+    s = requests.Session()
+    connection = databaseConnect()
+    allStores = getAllStores(s)
+    stores = ["PAK'nSAVE Albany","PAK'nSAVE Taupo" , "PAK'nSAVE Petone", "PAK'nSAVE Whangarei", "PAK'nSAVE Royal Oak"]
+    storeSaver(connection, allStores)
+
+    for name in stores:
+        storeId = allStores[name]['id']
         print("NEW STORE = " + name + "\n\n")
-        s = requests.Session()
-        s =setUpSession(s, storeId)
+        s = setUpSession(s, storeId)
         print(s.cookies["STORE_ID"])
         del s.cookies["server_nearest_store"]
-        connection = databaseConnect()
         links = getUrlLinks(s, storeId)
         cursor = connection.cursor()
         date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%Y-%m-%d"))

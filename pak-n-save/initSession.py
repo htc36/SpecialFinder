@@ -44,6 +44,17 @@ def fixJson(raw):
         raw[indexs[0]: indexs[1]] = [''.join(raw[indexs[0]: indexs[1]])]
     result = '\n'.join(raw)
     return json.loads(result)
+def getAllStores(s):
+    ua = UserAgent()
+    s.headers = {'User-Agent': ua.random}
+    storeDict = s.post('https://www.paknsaveonline.co.nz/CommonApi/Store/GetStoreList').json()['stores']
+    fullStoreDictonary = {}
+    for storeObject in storeDict:
+        fullStoreDictonary[storeObject['name']] = storeObject
+    return(fullStoreDictonary)
+
+
+
 def getStores():
     date = ((datetime.datetime.today() - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)).strftime("%d/%m/%y"))
     #data = json.loads(requests.get('https://www.paknsaveonline.co.nz/CommonApi/Store/GetStoreList').content)
