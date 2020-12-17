@@ -44,11 +44,11 @@ def addToDatabase(productList, priceList, connection):
 def storeSaver(connection, storeObjList):
     result = []
     for key,value in storeObjList.items():
-        toSave = [key.strip(), str(value["id"]), value["address"]]
+        toSave = [key.strip(), str(value["id"]), value["address"], value['latitude'], value['longitude']]
         result.append(toSave)
     cursor = connection.cursor()
-    query = "INSERT INTO `psStores` (storeName, storeCode, address) VALUES (%s, %s, %s) " \
-            "ON DUPLICATE KEY UPDATE address=VALUES (address)"
+    query = "INSERT INTO `psStores` (storeName, storeCode, address, lat, lng) VALUES (%s, %s, %s, %s, %s) " \
+            "ON DUPLICATE KEY UPDATE address=VALUES (address), lat=VALUES(lat), lng=VALUES(lng)"
     cursor.executemany(query, result)
     connection.commit()
     print("added stores to database")
