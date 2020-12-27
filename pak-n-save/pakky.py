@@ -87,7 +87,7 @@ def run():
     s = requests.Session()
     connection = databaseConnect()
     allStores = getAllStores(s)
-    stores = ["PAK'nSAVE Albany","PAK'nSAVE Taupo" , "PAK'nSAVE Petone", "PAK'nSAVE Whangarei", "PAK'nSAVE Royal Oak"]
+    stores = ["PAK'nSAVE Albany","PAK'nSAVE Taupo" , "PAK'nSAVE Petone", "PAK'nSAVE Whangarei", "PAK'nSAVE Royal Oak", "PAK'nSAVE Kilbirnie"]
     # storeSaver(connection, allStores)
 
     for name in stores:
