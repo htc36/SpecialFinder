@@ -93,7 +93,7 @@ def main():
     s = createSession()
     storeDictonary = getStores(s)
     # storeSaver(connection, storeDictonary)
-    stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central']
+    stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central', 'Countdown Petone']
     for store in stores:
         s = createSession()
         storeId = storeDictonary[store]['id']
