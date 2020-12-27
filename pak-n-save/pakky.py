@@ -88,7 +88,7 @@ def run():
     connection = databaseConnect()
     allStores = getAllStores(s)
     stores = ["PAK'nSAVE Albany","PAK'nSAVE Taupo" , "PAK'nSAVE Petone", "PAK'nSAVE Whangarei", "PAK'nSAVE Royal Oak"]
-    storeSaver(connection, allStores)
+    # storeSaver(connection, allStores)
 
     for name in stores:
         storeId = allStores[name]['id']

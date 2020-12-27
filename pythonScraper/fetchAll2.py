@@ -92,7 +92,7 @@ def main():
     connection = databaseConnect()
     s = createSession()
     storeDictonary = getStores(s)
-    storeSaver(connection, storeDictonary)
+    # storeSaver(connection, storeDictonary)
     stores = ['Countdown Newtown', 'Countdown Taupo', 'Countdown Ponsonby', 'Countdown Whangarei','Countdown Glenfield', 'Countdown Church Corner', 'Countdown Dunedin Central']
     for store in stores:
         s = createSession()
